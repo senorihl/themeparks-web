@@ -1,0 +1,175 @@
+{% extends 'base.twig' %}
+
+{% if followedRides %}
+    {% block title %}{{ followedRides }} | {{ park.Name }} | Themeparks{% endblock %}
+{% else %}
+    {% block title %}{{ park.Name }} | Themeparks{% endblock %}
+{% endif %}
+
+{% block metas %}
+    <meta property="og:title" content="{{ park.Name }}" />
+    <meta property="og:description" content="Wait times for {{ park.Name }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://themeparks.senorihl.xyz/{{ slug }}" />
+    <meta property="og:image:url" content="https://themeparks.senorihl.xyz/favicon-96.png" />
+    <meta property="og:image:width" content="96" />
+    <meta property="og:image:height" content="96" />
+    <meta property="og:site_name" content="Themeparks" />
+    <meta property="fb:app_id" content="480672509240227" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@senorihl" />
+    <meta name="twitter:creator" content="@senorihl" />
+    <meta name="description" content="Wait times for {{ park.Name }}" />
+    <meta property="og:image" content="https://themeparks.senorihl.xyz/favicon-96.png" />
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org/",
+            "@type": "WebSite",
+            "name": "Themeparks",
+            "url": "https://themeparks.senorihl.xyz/"
+        }
+    </script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://kit.fontawesome.com/cf94737c21.js" crossorigin="anonymous"></script>
+    <script>window.themeparks = {slug: {{ slug|json_encode }}, rideFocus: {{ rideFocus|json_encode }}};</script>
+    <script src="{{ asset('/park.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <main role="main" class="flex-shrink-0">
+        <div class="jumbotron jumbotron-fluid" itemscope itemtype="https://schema.org/Park">
+            <div class="container">
+                <h1 class="display-4" itemprop="name">{{park.Name}}</h1>
+                <p class="lead">Wait times &amp; today's schedule</p>
+                <p><a href="/">Back to list</a></p>
+            </div>
+        </div>
+        <div class="container">
+            <dl class="row">
+                {% if park.SupportsOpeningTimes %}
+                    <dd class="col-sm-8 text-center text-sm-left">
+                        <b>Opening times</b><br />
+                        {% for schedule in schedules %}
+                            {% if schedule.type == 'Operating' %}<time itemprop="openingHours" datetime="Mo-Su {{ schedule.openingTime|timezoned(park.Timezone, 'HH:mm') }}-{{ schedule.closingTime|timezoned(park.Timezone, 'HH:mm') }}">{% endif %}
+                            From <span class="schedule {{ schedule.isActive ? 'schedule-active' : '' }}">{{ schedule.openingTime|timezoned(park.Timezone) }}</span>
+                            to <span class="schedule {{ schedule.isActive ? 'schedule-active' : '' }}">{{ schedule.closingTime|timezoned(park.Timezone) }}</span>
+                            {% if schedule.type != 'Operating' %}({{ schedule.type }}){% endif %}
+                            {% if not loop.last %}<br />{% endif %}
+                            {% if schedule.type == 'Operating' %}</time>{% endif %}
+                        {% endfor %}
+                    </dd>
+                {% endif %}
+                <dd class="col-sm-2 text-sm-right text-center">
+                    <b>Local time</b><br />
+                    <span class="moment" data-timezone="{{park.Timezone}}">{{ 'now'|timezoned(park.Timezone) }}</span>
+                </dd>
+                <dd class="col-sm-2 text-sm-right text-center">
+                    <b>Location</b><br />
+                    <a href="https://www.google.com/maps/place/{{ park.Latitude ~ '+' ~ park.Longitude }}/@{{park.LatitudeRaw}},{{park.LongitudeRaw}},17z/" target="_blank" rel="noopener nofollow">
+                        Go to Maps
+                        <span class="sr-only" itemprop="latitude">{{ park.Latitude }}</span>
+                        <span class="sr-only" itemprop="longitude">{{ park.Longitude }}</span>
+                    </a>
+                    {% if md.phone() or md.mobile() or md.tablet() %}
+                        <br />
+                        <a href="geo:{{ park.LatitudeRaw ~ ',' ~ park.LongitudeRaw }}" target="_blank">Open your map application</a>
+                    {% endif %}
+                </dd>
+            </dl>
+            <div class="card-list" id="ride-list">
+                {% for waitTime in waitTimes %}
+                    <div class="card text-center ride-row" id="ride-{{ waitTime.id }}" data-wait="{{ waitTime.waitTime }}" data-status="{{ waitTime.status|slug }}">
+                        <div class="row">
+                            <div class="card-body col-10 col-lg-11">
+                                <a href="#ride-{{ waitTime.id }}" class="h5 card-title text-decoration-none">{{ waitTime.name }}</a>
+                                <div class="row justify-content-center mt-5">
+                                    {% if park.SupportsWaitTimes %}
+                                        <div class="col-sm-4">
+                                            <p><b>Wait time</b></p>
+                                            <p><span class="ride-wait">{{ waitTime.waitTime }}</span>&nbsp;<span class="wait-evolution"></span></p>
+                                        </div>
+                                    {% endif %}
+                                    <div class="col-sm-4">
+                                        <p><b>Status</b></p>
+                                        <p class="ride-status">{{ waitTime.status }}</p>
+                                        {% if park.SupportsRideSchedules and waitTime.schedule %}
+                                            <p><b>Openings</b></p>
+                                            {% set schedule = waitTime.schedule %}
+                                            From <span class="schedule {{ schedule.isActive ? 'schedule-active' : '' }}">{{ schedule.openingTime|timezoned(park.Timezone) }}</span>
+                                            to <span class="schedule {{ schedule.isActive ? 'schedule-active' : '' }}">{{ schedule.closingTime|timezoned(park.Timezone) }}</span>
+                                            {% if schedule.type != 'Operating' %}({{ schedule.type }}){% endif %}<br />
+
+                                            {% for schedule in schedules %}
+                                                From <span class="schedule {{ schedule.isActive ? 'schedule-active' : '' }}">{{ schedule.openingTime|timezoned(park.Timezone) }}</span>
+                                                to <span class="schedule {{ schedule.isActive ? 'schedule-active' : '' }}">{{ schedule.closingTime|timezoned(park.Timezone) }}</span>
+                                                {% if schedule.type != 'Operating' %}({{ schedule.type }}){% endif %}
+                                                {% if not loop.last %}<br />{% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <p><b>Last update</b></p>
+                                        <p class="ride-last-update">{{ waitTime.lastUpdate|timeFromNow }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2 col-lg-1">
+                                <table class="h-100 w-100">
+                                    <tr>
+                                        <td class="card-share-link card-share-link--twitter">
+                                            <a
+                                                    target="_blank"
+                                                    data-href="?ride={{ waitTime.id }}"
+                                                    class="h-100 w-100 "
+                                                    data-text="Check wait times for {{ waitTime.name|e }}"
+                                                    data-sharer-url="https://twitter.com/intent/tweet?text=__text__%20:%20__url__"
+                                            ><span class="sr-only">Tweet about this</span><i class="fab fa-twitter"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="card-share-link card-share-link--facebook ">
+                                            <a
+                                                    target="_blank"
+                                                    data-href="?ride=ride-{{ waitTime.id }}"
+                                                    class="h-100 w-100"
+                                                    data-text="Check wait times for {{ waitTime.name|e }}"
+                                                    data-sharer-url="https://www.facebook.com/dialog/share?app_id=480672509240227&display=page&href=__url__&quote=__text__"
+                                            ><span class="sr-only">Share this on facebook</span><i class="fab fa-facebook-f"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="card-share-link card-share-link--messenger ">
+                                            <a
+                                                    target="_blank"
+                                                    data-href="?ride=ride-{{ waitTime.id }}"
+                                                    class="h-100 w-100"
+                                                    data-text="Check wait times for {{ waitTime.name|e }}"
+                                                    data-sharer-url="https://www.facebook.com/dialog/send?app_id=480672509240227&display=page&link=__url__&redirect_uri=__url__"
+                                            ><span class="sr-only">Share this on messenger</span><i class="fab fa-facebook-messenger"></i></a>
+                                        </td>
+                                    </tr>
+                                    {% if md.phone() or md.mobile() or md.tablet() %}
+                                    <tr>
+                                        <td class="card-share-link card-share-link--whatsapp">
+                                            <a
+                                                    target="_blank"
+                                                    data-href="?ride=ride-{{ waitTime.id }}"
+                                                    class="h-100 w-100"
+                                                    data-text="Check wait times for {{ waitTime.name|e }}"
+                                                    data-sharer-url="whatsapp://send?text=__text__%20:%20__url__"
+                                            ><span class="sr-only">Share this on WhatsApp</span><i class="fab fa-whatsapp"></i></a>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+{% endblock %}

@@ -1,0 +1,89 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/root";
+@import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/type";
+@import "~bootstrap/scss/grid";
+@import "~bootstrap/scss/list-group";
+@import "~bootstrap/scss/jumbotron";
+@import "~bootstrap/scss/card";
+@import "~bootstrap/scss/utilities";
+
+.ride-row {
+  a {
+    color: inherit;
+  }
+
+  &[data-status="operating"] {
+    @extend .bg-light;
+    @extend .text-dark;
+  }
+
+  &[data-status="closed"] {
+    @extend .bg-secondary;
+    @extend .text-white;
+  }
+
+  &[data-status="down"] {
+    @extend .bg-danger;
+    @extend .text-white;
+  }
+
+  &[data-status="special"] {
+    @extend .bg-info;
+    @extend .text-white;
+  }
+
+  &[data-status="refurbishment"] {
+    @extend .bg-warning;
+    @extend .text-dark;
+  }
+
+  &--active.ride-row[data-status="operating"], &[data-status="operating"]:target {
+    @extend .bg-primary;
+    @extend .text-white;
+
+    .card-title {
+      @extend .text-white;
+    }
+  }
+}
+.schedule {
+  font-weight: bold;
+}
+.schedule.schedule-active {
+  color: rgb(25, 100, 219) !important;
+}
+.card-list .card {
+  border-radius: 0;
+}
+.card-list .card:nth-child(n+2) {
+  border-top: 0;
+}
+.card-list .card:first-child {
+  border-radius: .25rem .25rem 0 0;
+}
+.card-list .card:last-child {
+  border-radius: 0 0 .25rem .25rem;
+}
+
+.card-share-link {
+  color: white !important;
+
+  &--facebook {
+        background-color: #3b5998;
+  }
+
+  &--twitter {
+    background-color: #1da1f2;
+  }
+
+  &--whatsapp {
+    background-color: #075e54;
+  }
+
+  &--messenger {
+    background-color: #0084ff;
+  }
+}

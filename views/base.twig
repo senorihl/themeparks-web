@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html class="h-100" lang="en" xmlns:og="http://ogp.me/ns#">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% block metas %}{% endblock %}
+
+    <title>{% block title %}Themeparks | One entry point for multiple parks{% endblock %}</title>
+    <link rel="shortcut icon" href="https://themeparks.senorihl.xyz/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="https://themeparks.senorihl.xyz/favicon.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="https://themeparks.senorihl.xyz/favicon-32.png" type="image/png">
+    <link rel="icon" sizes="64x64" href="https://themeparks.senorihl.xyz/favicon-64.png" type="image/png">
+    <link rel="icon" sizes="96x96" href="https://themeparks.senorihl.xyz/favicon-96.png" type="image/png">
+    <link rel="stylesheet" href="{{ asset('/app.css') }}">
+</head>
+<body class="d-flex flex-column h-100">
+{% block content %}{% endblock %}
+
+{% block footer %}
+    <footer class="footer mt-5 py-3 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <span class="">2019 © Senorihl</span>
+                    <span class="text-muted float-right float-sm-none">version {{version}}</span>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ul class="list-inline m-0 float-sm-right">
+                        <li class="list-inline-item"><a href="https://senorihl.github.io/?utm_source=themeparks&amp;utm_medium=affiliate&amp;utm_campaign=autopromo" class="btn btn-link  octicon octicon-person" target="_blank" rel="nofollow"><svg version="1.1" width="12" height="16" viewBox="0 0 12 16" class="octicon octicon-person" aria-hidden="true"><path fill-rule="evenodd" d="M12 14.002a.998.998 0 0 1-.998.998H1.001A1 1 0 0 1 0 13.999V13c0-2.633 4-4 4-4s.229-.409 0-1c-.841-.62-.944-1.59-1-4 .173-2.413 1.867-3 3-3s2.827.586 3 3c-.056 2.41-.159 3.38-1 4-.229.59 0 1 0 1s4 1.367 4 4v1.002z"></path></svg> About me</a></li>
+                        <li class="list-inline-item float-right float-sm-none"><a href="https://paypal.me/rodolpherenaux" class="btn btn-link octicon octicon-flame" target="_blank" rel="nofollow"><svg version="1.1" width="12" height="16" viewBox="0 0 12 16" class="octicon octicon-flame" aria-hidden="true"><path fill-rule="evenodd" d="M5.05.31c.81 2.17.41 3.38-.52 4.31C3.55 5.67 1.98 6.45.9 7.98c-1.45 2.05-1.7 6.53 3.53 7.7-2.2-1.16-2.67-4.52-.3-6.61-.61 2.03.53 3.33 1.94 2.86 1.39-.47 2.3.53 2.27 1.67-.02.78-.31 1.44-1.13 1.81 3.42-.59 4.78-3.42 4.78-5.56 0-2.84-2.53-3.22-1.25-5.61-1.52.13-2.03 1.13-1.89 2.75.09 1.08-1.02 1.8-1.86 1.33-.67-.41-.66-1.19-.06-1.78C8.18 5.31 8.68 2.45 5.05.32L5.03.3l.02.01z"></path></svg> Support me</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('/app.js') }}"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-70834668-7"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-70834668-7');
+    </script>
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '480672509240227',
+                cookie     : true,
+                xfbml      : true,
+                version    : 'v5.0'
+            });
+
+            FB.AppEvents.logPageView();
+
+        };
+
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+{% endblock %}
+</body>

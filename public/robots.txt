@@ -1,0 +1,4 @@
+Sitemap: https://themeparks.senorihl.xyz/sitemap.xml
+
+User-agent: *
+Allow: /
